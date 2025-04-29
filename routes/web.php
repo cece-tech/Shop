@@ -1,4 +1,7 @@
 <?php
+
+use App\Http\Controllers\ShopController;
+use App\Http\Livewire\CreateProduct;
 use App\Http\Controllers\MasterSubCategoryController;
 use App\Http\Controllers\MasterCategoryController;
 use App\Http\Controllers\Customer\CustomerMainController;
@@ -106,6 +109,17 @@ Route::middleware(['auth', 'verified', 'rolemanager:customer'])->group(function 
             Route::get('/affiliate', 'affiliate') ->name('customer.affiliate');
         });
     });
+});
+
+// Shop routes for buyers
+Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
+Route::get('/shop/{id}', [ShopController::class, 'show'])->name('shop.show');
+Route::post('/shop/{id}/checkout', [ShopController::class, 'checkout'])->name('shop.checkout');
+Route::get('/checkout/success/{id}', [ShopController::class, 'checkoutSuccess'])->name('checkout.success');
+
+// Product creation routes for sellers (with auth middleware)
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::get('/dashboard/products/create', CreateProduct::class)->name('products.create');
 });
 
 Route::middleware('auth')->group(function () {
